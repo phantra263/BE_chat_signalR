@@ -24,7 +24,7 @@ namespace Lab.SignalR_Chat.BE
                 options.AddPolicy(name: "AllowCors",
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200", "https://chat-togerther-test.netlify.app")
+                                      builder.WithOrigins("http://localhost:4200", "https://box-messenger.netlify.app/")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials();
