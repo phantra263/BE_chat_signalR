@@ -92,22 +92,47 @@ namespace Lab.SignalR_Chat.BE.SignalR
 
             if (!string.IsNullOrEmpty(userId))
             {
+                var response = new Response<object>(new { ConversationId = request.conversationId, SenderId = userId, SenderName = request.senderName, ReceiverId = request.receiverId, Content = request.content, Timming = request.timming });
+
                 foreach (var connectionId in GetConnectionIds(userId))
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.ConversationId, SenderId = userId, request.SenderName, request.ReceiverId, request.Content, request.Timming }));
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
                 }
 
-                if (!userId.Equals(request.ReceiverId))
+                if (!userId.Equals(request.receiverId))
                 {
                     int cnt = 0;
-                    foreach (var connectionId in GetConnectionIds(request.ReceiverId))
+                    foreach (var connectionId in GetConnectionIds(request.receiverId))
                     {
                         ++cnt;
-                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.ConversationId, SenderId = userId, request.SenderName, request.ReceiverId, request.Content, request.Timming }));
+                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
 
                         // gửi thông báo cho user khi có tin nhắn mới
                         if (cnt == 1)
-                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.SenderName} vào lúc {request.Timming}" }));
+                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName} vào lúc {request.timming}" }));
+                    }
+                }
+            }
+        }
+
+        public async Task ReadMessage(ReadMessageRequest request)
+        {
+            var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var response = new Response<object>(new { SenderId = userId, ReceiverId = request.receiverId, Seen = request.seen });
+
+                foreach (var connectionId in GetConnectionIds(userId))
+                {
+                    await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
+                }
+
+                if (!userId.Equals(request.receiverId))
+                {
+                    foreach (var connectionId in GetConnectionIds(request.receiverId))
+                    {
+                        await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
                     }
                 }
             }

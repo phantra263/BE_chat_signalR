@@ -4,11 +4,12 @@ namespace Lab.SignalR_Chat.BE.Models
 {
     public class MessageRequest
     {
-        public string ConversationId { get; set; }
-        public string SenderName { get; set; }
-        public string ReceiverId { get; set; }
-        public string ReceiverName { get; set; }
-        public string Content { get; set; }
-        public DateTime? Timming { get; set; }
+        public string conversationId { get; set; }
+        public string senderName { get; set; }
+        public string receiverId { get; set; }
+        public string receiverName { get; set; }
+        public string content { get; set; }
+        public DateTime? timming { get; set; }
+        public bool seen { get; set; }
     }
 }
