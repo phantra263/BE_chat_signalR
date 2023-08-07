@@ -1,3 +1,4 @@
+using Lab.SignalR_Chat.BE.Logging;
 using Lab.SignalR_Chat.BE.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,8 @@ namespace Lab.SignalR_Chat.BE
                                   });
             });
             services.AddSignalR();
+
+            services.AddTransient<IMemoriesLog, MemoriesLog>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

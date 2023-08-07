@@ -1,4 +1,5 @@
-﻿using Lab.SignalR_Chat.BE.ViewModels;
+﻿using Lab.SignalR_Chat.BE.Models;
+using Lab.SignalR_Chat.BE.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -115,16 +116,6 @@ namespace Lab.SignalR_Chat.BE.SignalR
         private List<string> GetConnectionIds(string key)
         {
             return usersOnline.ContainsKey(key) ? usersOnline[key] : new List<string>();
-        }
-
-        public class MessageRequest
-        {
-            public string ConversationId { get; set; }
-            public string SenderName { get; set; }
-            public string ReceiverId { get; set; }
-            public string ReceiverName { get; set; }
-            public string Content { get; set; }
-            public DateTime? Timming { get; set; }
         }
     }
 }
