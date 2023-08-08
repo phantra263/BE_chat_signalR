@@ -1,5 +1,5 @@
 ﻿using Lab.SignalR_Chat.BE.Logging;
-using Lab.SignalR_Chat.BE.Models;
+using Lab.SignalR_Chat.BE.Models.Requests;
 using Lab.SignalR_Chat.BE.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using System;
