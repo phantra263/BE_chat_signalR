@@ -4,6 +4,7 @@ namespace Lab.SignalR_Chat.BE.Models
 {
     public class MessageRequest
     {
+        public string id { get; set; }
         public string conversationId { get; set; }
         public string senderName { get; set; }
         public string receiverId { get; set; }

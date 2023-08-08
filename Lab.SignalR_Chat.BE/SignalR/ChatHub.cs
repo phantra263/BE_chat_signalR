@@ -92,7 +92,7 @@ namespace Lab.SignalR_Chat.BE.SignalR
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var response = new Response<object>(new { ConversationId = request.conversationId, SenderId = userId, SenderName = request.senderName, ReceiverId = request.receiverId, Content = request.content, Timming = request.timming });
+                var response = new Response<object>(new { id = request.id, ConversationId = request.conversationId, SenderId = userId, SenderName = request.senderName, ReceiverId = request.receiverId, Content = request.content, Timming = request.timming });
 
                 foreach (var connectionId in GetConnectionIds(userId))
                 {
