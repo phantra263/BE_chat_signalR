@@ -1,5 +1,5 @@
-﻿using Lab.SignalR_Chat.BE.Context.Entities;
-using Lab.SignalR_Chat.BE.Services;
+﻿using Chat.Application.Interfaces.IRepositories;
+using Chat.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -9,20 +9,20 @@ namespace Lab.SignalR_Chat.BE.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly BookService _bookService;
+        private readonly IBookRepositoryAsync _bookRepositoryAsync;
 
-        public BooksController(BookService bookService)
+        public BooksController(IBookRepositoryAsync bookRepositoryAsync)
         {
-            _bookService = bookService;
+            _bookRepositoryAsync = bookRepositoryAsync;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() => Ok(await _bookService.GetAsync());
+        public async Task<IActionResult> Get() => Ok(await _bookRepositoryAsync.GetAsync());
 
         [HttpGet("{id:length(24)}", Name = "GetBook")]
         public async Task<IActionResult> Get(string id)
         {
-            var book = await _bookService.GetAsync(id);
+            var book = await _bookRepositoryAsync.GetAsync(id);
 
             if (book == null)
                 return NotFound();
@@ -33,7 +33,7 @@ namespace Lab.SignalR_Chat.BE.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Book book)
         {
-            await _bookService.CreateAsync(book);
+            await _bookRepositoryAsync.CreateAsync(book);
 
             return CreatedAtRoute("GetBook", new { id = book.Id.ToString() }, book);
         }
@@ -41,12 +41,12 @@ namespace Lab.SignalR_Chat.BE.Controllers
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, Book bookIn)
         {
-            var book = await _bookService.GetAsync(id);
+            var book = await _bookRepositoryAsync.GetAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            await _bookService.UpdateAsync(id, bookIn);
+            await _bookRepositoryAsync.UpdateAsync(id, bookIn);
 
             return NoContent();
         }
@@ -54,12 +54,12 @@ namespace Lab.SignalR_Chat.BE.Controllers
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var book = await _bookService.GetAsync(id);
+            var book = await _bookRepositoryAsync.GetAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            await _bookService.RemoveAsync(id);
+            await _bookRepositoryAsync.RemoveAsync(id);
 
             return NoContent();
         }

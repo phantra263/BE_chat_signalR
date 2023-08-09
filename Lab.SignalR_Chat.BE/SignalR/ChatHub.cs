@@ -1,5 +1,5 @@
-﻿using Lab.SignalR_Chat.BE.Models.Requests;
-using Lab.SignalR_Chat.BE.ViewModels;
+﻿using Chat.Application.Wrappers;
+using Lab.SignalR_Chat.BE.Models.Requests;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

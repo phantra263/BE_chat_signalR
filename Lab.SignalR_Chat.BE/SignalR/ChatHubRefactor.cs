@@ -1,6 +1,6 @@
-﻿using Lab.SignalR_Chat.BE.Logging;
+﻿using Chat.Application.Logging;
+using Chat.Application.Wrappers;
 using Lab.SignalR_Chat.BE.Models.Requests;
-using Lab.SignalR_Chat.BE.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lab.SignalR_Chat.BE.Logging
+namespace Chat.Application.Logging
 {
     public class MemoriesLog : IMemoriesLog
     {
@@ -14,10 +14,10 @@ namespace Lab.SignalR_Chat.BE.Logging
                     result = memoryBefore / 1024;
                     break;
                 case "mb":
-                    result = (memoryBefore / 1024) / 1024;
+                    result = memoryBefore / 1024 / 1024;
                     break;
                 case "gb":
-                    result = ((memoryBefore / 1024) / 1024) / 1024;
+                    result = memoryBefore / 1024 / 1024 / 1024;
                     break;
                 default:
                     result = memoryBefore;

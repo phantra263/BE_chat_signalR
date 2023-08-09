@@ -1,4 +1,4 @@
-﻿namespace Lab.SignalR_Chat.BE.Logging
+﻿namespace Chat.Application.Logging
 {
     public interface IMemoriesLog
     {

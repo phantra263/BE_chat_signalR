@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Lab.SignalR_Chat.BE.ViewModels
+namespace Chat.Application.Wrappers
 {
     public class Response<T>
     {

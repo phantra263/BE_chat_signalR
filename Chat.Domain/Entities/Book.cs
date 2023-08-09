@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Lab.SignalR_Chat.BE.Context.Entities
+namespace Chat.Domain.Entities
 {
     public class Book
     {
