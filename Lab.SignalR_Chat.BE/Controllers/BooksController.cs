@@ -1,7 +1,7 @@
 ﻿using Lab.SignalR_Chat.BE.Context.Entities;
 using Lab.SignalR_Chat.BE.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Lab.SignalR_Chat.BE.Controllers
 {
@@ -17,49 +17,49 @@ namespace Lab.SignalR_Chat.BE.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Book>> Get() => _bookService.Get();
+        public async Task<IActionResult> Get() => Ok(await _bookService.GetAsync());
 
         [HttpGet("{id:length(24)}", Name = "GetBook")]
-        public ActionResult<Book> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var book = _bookService.Get(id);
+            var book = await _bookService.GetAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            return book;
+            return Ok(book);
         }
 
         [HttpPost]
-        public ActionResult<Book> Create(Book book)
+        public async Task<IActionResult> Create(Book book)
         {
-            _bookService.Create(book);
+            await _bookService.CreateAsync(book);
 
             return CreatedAtRoute("GetBook", new { id = book.Id.ToString() }, book);
         }
 
         [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Book bookIn)
+        public async Task<IActionResult> Update(string id, Book bookIn)
         {
-            var book = _bookService.Get(id);
+            var book = await _bookService.GetAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            _bookService.Update(id, bookIn);
+            await _bookService.UpdateAsync(id, bookIn);
 
             return NoContent();
         }
 
         [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var book = _bookService.Get(id);
+            var book = await _bookService.GetAsync(id);
 
             if (book == null)
                 return NotFound();
 
-            _bookService.Remove(id);
+            await _bookService.RemoveAsync(id);
 
             return NoContent();
         }
