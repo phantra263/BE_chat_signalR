@@ -20,20 +20,9 @@ namespace Chat.Infrastructure.Persistence.Repositories
             _user = database.GetCollection<User>(Collections.UserCollection);
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<IList<User>> GetAsync()
         {
-            await _user.InsertOneAsync(user);
-            return user;
-        }
-
-        public async Task DeleteAsync(string id)
-        {
-            await _user.DeleteOneAsync(x => x.Id == id);
-        }
-
-        public async Task<User> GetByNickNameAsync(string nickname)
-        {
-            return await _user.Find(x => x.Nickname == nickname).FirstOrDefaultAsync();
+            return await _user.Find(x => true).ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(string id)
@@ -41,14 +30,25 @@ namespace Chat.Infrastructure.Persistence.Repositories
             return await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IList<User>> GetAsync()
+        public async Task<User> GetByNickNameAsync(string nickname)
         {
-            return await _user.Find(x => true).ToListAsync();
+            return await _user.Find(x => x.Nickname == nickname).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> CreateAsync(User user)
+        {
+            await _user.InsertOneAsync(user);
+            return user;
         }
 
         public async Task UpdateAsync(string id, User user)
         {
             await _user.ReplaceOneAsync(x => x.Id == id, user);
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            await _user.DeleteOneAsync(x => x.Id == id);
         }
     }
 }

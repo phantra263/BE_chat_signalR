@@ -22,6 +22,7 @@ namespace Chat.Infrastructure.Persistence
             services.AddTransient<IBookRepositoryAsync, BookRepositoryAsync>();
             services.AddTransient<IMessageRepositoryAsync, MessageRepositoryAsync>();
             services.AddTransient<IBoxRepositoryAsync, BoxRepositoryAsync>();
+            services.AddTransient<IUserRepositoryAsync, UserRepositoryAsync>();
         }
     }
 }
