@@ -11,6 +11,7 @@ namespace Chat.Infrastructure.Persistence.Repositories
     public class UserRepositoryAsync : IUserRepositoryAsync
     {
         private readonly IMongoCollection<User> _user;
+        private readonly IMongoCollection<Box> _box;
 
         public UserRepositoryAsync(IMongoDBSettings settings)
         {
@@ -18,21 +19,22 @@ namespace Chat.Infrastructure.Persistence.Repositories
             var database = client.GetDatabase(settings.DatabaseName);
 
             _user = database.GetCollection<User>(Collections.UserCollection);
+            _box = database.GetCollection<Box>(Collections.BoxCollection);
         }
 
-        public async Task<IList<User>> GetAsync()
+        public async Task<IReadOnlyList<User>> GetAsync()
         {
             return await _user.Find(x => true).ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(string id)
         {
-            return await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return await _user.Find(x => x.Deleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetByNickNameAsync(string nickname)
+        public async Task<User> GetByNicknameAsync(string nickname)
         {
-            return await _user.Find(x => x.Nickname == nickname).FirstOrDefaultAsync();
+            return await _user.Find(x => x.Deleted != true && x.Nickname.Equals(nickname)).FirstOrDefaultAsync();
         }
 
         public async Task<User> CreateAsync(User user)
@@ -49,6 +51,13 @@ namespace Chat.Infrastructure.Persistence.Repositories
         public async Task DeleteAsync(string id)
         {
             await _user.DeleteOneAsync(x => x.Id == id);
+        }
+
+        public async Task<IReadOnlyList<User>> GetListByNicknameAsync(string nickname)
+        {
+            if (string.IsNullOrEmpty(nickname))
+                return null;
+            return await _user.Find(x => x.Deleted != true && x.Nickname.Contains(nickname)).ToListAsync();
         }
     }
 }

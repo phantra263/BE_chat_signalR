@@ -11,5 +11,6 @@ namespace Chat.Application.Interfaces.IRepositories
         Task<Message> CreateAsync(Message message);
         Task UpdateAsync(string id, Message message);
         Task DeleteAsync(string id);
+        Task<IReadOnlyList<Message>> GetMessageChatAsync(int pageNumber, int pageSize, string keyword, string senderId, string receiverId);
     }
 }

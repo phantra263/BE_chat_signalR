@@ -28,14 +28,14 @@ namespace Chat.Infrastructure.Persistence.Repositories
             return box;
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteByIdAsync(string id)
         {
             await _box.DeleteOneAsync(x => x.Id == id);
         }
 
         public async Task<Box> GetByIdAsync(string id)
         {
-            return await _box.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return await _box.Find(x => x.Deleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IList<Box>> GetAsync()
@@ -46,6 +46,16 @@ namespace Chat.Infrastructure.Persistence.Repositories
         public async Task UpdateAsync(string id, Box box)
         {
             await _box.ReplaceOneAsync(x => x.Id == id, box);
+        }
+
+        public async Task<Box> GetCheckExist(string user1Id, string user2Id)
+        {
+            return await _box.Find(x => x.Deleted != true && x.User1Id == user1Id && x.User2Id == user2Id).FirstOrDefaultAsync();
+        }
+
+        public async Task FindAndDeleteByUserAsync(string user1Id, string user2Id)
+        {
+            await _box.DeleteOneAsync(x => x.Deleted != true && x.User1Id == user1Id && x.User2Id == user2Id);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Chat.Infrastructure.Persistence.Repositories
 
         public async Task<Message> GetByIdAsync(string id)
         {
-            return await _message.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return await _message.Find(x => x.Deleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IList<Message>> GetAsync()
@@ -44,6 +44,16 @@ namespace Chat.Infrastructure.Persistence.Repositories
         public async Task UpdateAsync(string id, Message message)
         {
             await _message.ReplaceOneAsync(x => x.Id == id, message);
+        }
+
+        public async Task<IReadOnlyList<Message>> GetMessageChatAsync(int pageNumber, int pageSize, string keyword, string senderId, string receiverId)
+        {
+            return await _message
+                .Find(x => x.Deleted != true && (x.Content.Contains(keyword) || string.IsNullOrEmpty(keyword)) &&
+                     ((x.SenderId == senderId && x.ReceiverId == receiverId) || (x.SenderId == receiverId && x.ReceiverId == senderId)))
+                .Skip((pageNumber - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
         }
     }
 }

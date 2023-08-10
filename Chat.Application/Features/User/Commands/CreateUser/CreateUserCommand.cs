@@ -25,7 +25,7 @@ namespace Chat.Application.Features.User.Commands.CreateUser
         {
             try
             {
-                var userExist = await _userRepositoryAsync.GetByNickNameAsync(request.Nickname);
+                var userExist = await _userRepositoryAsync.GetByNicknameAsync(request.Nickname);
                 if (userExist != null)
                     return new Response<Domain.Entities.User>($"Nickname đã tồn tại");
 

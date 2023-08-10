@@ -18,9 +18,11 @@ namespace Chat.Domain.Entities
         [JsonProperty("Deleted")]
         public bool Deleted { get; set; }
 
+        [BsonRepresentation(BsonType.ObjectId)]
         [JsonProperty("User1Id")]
         public string User1Id { get; set; }
 
+        [BsonRepresentation(BsonType.ObjectId)]
         [JsonProperty("User2Id")]
         public string User2Id { get; set; }
 
