@@ -19,8 +19,6 @@ namespace Chat.API.Controllers
 
         [HttpGet("{conversationId}")]
         public async Task<IActionResult> Get(string conversationId)
-        {
-            return Ok(await Mediator.Send(new GetByConversationIdQuery { ConversationId = conversationId }));
-        }
+            => Ok(await Mediator.Send(new GetByConversationIdQuery { ConversationId = conversationId }));
     }
 }

@@ -1,4 +1,6 @@
-﻿using Chat.Application.Features.User.Commands.CreateUser;
+﻿using AutoMapper;
+using Chat.Application.Features.User.Commands.Authenticate;
+using Chat.Application.Features.User.Commands.Register;
 using Chat.Application.Features.User.Queries.GetByNickname;
 using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +12,26 @@ namespace Chat.API.Controllers
     [ApiController]
     public class UsersController : BaseApiController
     {
-        [HttpGet("SearchUser")]
-        public async Task<IActionResult> Get([FromQuery] GetByNicknameParameter parameter)
+        private readonly IMapper _mapper;
+
+        public UsersController(IMapper mapper)
         {
-            return Ok(await Mediator.Send(new GetByNicknameQuery { Nickname = parameter.Nickname, YourNickname = parameter.YourNickname }));
+            _mapper = mapper;
         }
 
-        [HttpPost("CreateNickname")]
-        public async Task<IActionResult> Post(CreateUserParameter parameter)
-        {
-            return Ok(await Mediator.Send(new CreateUserCommand { Nickname = parameter.Nickname, AvatarBgColor = parameter.AvatarBgColor }));
-        }
+        [HttpGet]
+        [Route("SearchUser")]
+        public async Task<IActionResult> Get([FromQuery] GetByNicknameParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<GetByNicknameQuery>(parameter)));
+
+        [HttpPost]
+        [Route("Authenticate")]
+        public async Task<IActionResult> Post(AuthenticateParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<AuthenticateCommand>(parameter)));
+
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Post(RegisterParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<RegisterCommand>(parameter)));
     }
 }

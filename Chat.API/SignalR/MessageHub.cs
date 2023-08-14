@@ -1,11 +1,9 @@
-﻿using Chat.API.BackgroundServices;
-using Chat.API.Models.Requests;
+﻿using Chat.API.Models.Requests;
 using Chat.API.SignalR.PresenceTracker;
 using Chat.Application.Features.Box.Queries.GetBoxChatWith;
 using Chat.Application.Wrappers;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +13,13 @@ namespace Chat.API.SignalR
     {
         private readonly IPresenceTracker _presenceTracker;
         private readonly IMediator _mediator;
-        private readonly IHostedService _backgroundService;
+        //private readonly IHostedService _backgroundService;
 
-        public MessageHub(IPresenceTracker presenceTracker, IMediator mediator, IHostedService backgroundService)
+        public MessageHub(IPresenceTracker presenceTracker, IMediator mediator)
         {
             _presenceTracker = presenceTracker;
             _mediator = mediator;
-            _backgroundService = backgroundService;
+            //_backgroundService = backgroundService;
         }
 
         public override async Task OnConnectedAsync()
@@ -46,8 +44,8 @@ namespace Chat.API.SignalR
                 }
             }
 
-            if (_backgroundService is Worker worker)
-                worker.CancelTask(userId);
+            //if (_backgroundService is Worker worker)
+            //    worker.CancelTask(userId);
 
             await base.OnConnectedAsync();
         }
@@ -64,8 +62,8 @@ namespace Chat.API.SignalR
                     await Clients.All.SendAsync("OnDisconnected", new Response<object>(new { UserId = userId, IsOnline = false }));
             }
 
-            if (_backgroundService is Worker worker)
-                worker.TriggerTask(userId);
+            //if (_backgroundService is Worker worker)
+            //    worker.TriggerTask(userId);
 
             await base.OnDisconnectedAsync(exception);
         }

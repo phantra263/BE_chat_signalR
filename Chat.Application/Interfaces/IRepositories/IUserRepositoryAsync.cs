@@ -13,5 +13,6 @@ namespace Chat.Application.Interfaces.IRepositories
         Task<User> CreateAsync(User user);
         Task UpdateAsync(string id, User user);
         Task DeleteAsync(string id);
+        Task<User> Authenticate(string nickname, string password);
     }
 }

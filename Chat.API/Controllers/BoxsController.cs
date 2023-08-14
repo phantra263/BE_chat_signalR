@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Chat.Application.Features.Box.Commands.CreateBox;
+using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
 using Chat.Application.Features.Box.Queries.GetBoxLatestMessage;
-using Chat.Application.Features.Box.Queries.GetBoxMessage;
 using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -19,26 +18,20 @@ namespace Chat.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(CreateBoxParameter parameter)
-        {
-            return Ok(await Mediator.Send(new CreateBoxCommand { User1Id = parameter.User1Id, User2Id = parameter.User2Id }));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Post(CreateBoxParameter parameter)
+        //    => Ok(await Mediator.Send(new CreateBoxCommand { User1Id = parameter.User1Id, User2Id = parameter.User2Id }));
+
+        //[HttpGet("GetBoxMessage")]
+        //public async Task<IActionResult> Get([FromQuery] GetBoxMessageParameter parameter)
+        //    => Ok(await Mediator.Send(_mapper.Map<GetBoxMessageQuery>(parameter)));
 
         [HttpGet("GetBoxLatestMessage")]
         public async Task<IActionResult> Get([FromQuery] GetBoxLatestMessageParameter parameter)
-        {
-            var query = _mapper.Map<GetBoxLatestMessageQuery>(parameter);
+            => Ok(await Mediator.Send(_mapper.Map<GetBoxLatestMessageQuery>(parameter)));
 
-            return Ok(await Mediator.Send(query));
-        }
-
-        [HttpGet("GetBoxMessage")]
-        public async Task<IActionResult> Get([FromQuery] GetBoxMessageParameter parameter)
-        {
-            var query = _mapper.Map<GetBoxMessageQuery>(parameter);
-
-            return Ok(await Mediator.Send(query));
-        }
+        [HttpGet("GetByUserId")]
+        public async Task<IActionResult> Get([FromQuery] GetBoxChatByUserIdParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<GetBoxChatByUserIdQuery>(parameter)));
     }
 }
