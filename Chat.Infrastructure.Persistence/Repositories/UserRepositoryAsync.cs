@@ -11,7 +11,6 @@ namespace Chat.Infrastructure.Persistence.Repositories
     public class UserRepositoryAsync : IUserRepositoryAsync
     {
         private readonly IMongoCollection<User> _user;
-        private readonly IMongoCollection<Box> _box;
 
         public UserRepositoryAsync(IMongoDBSettings settings)
         {
@@ -19,7 +18,6 @@ namespace Chat.Infrastructure.Persistence.Repositories
             var database = client.GetDatabase(settings.DatabaseName);
 
             _user = database.GetCollection<User>(Collections.UserCollection);
-            _box = database.GetCollection<Box>(Collections.BoxCollection);
         }
 
         public async Task<IReadOnlyList<User>> GetAsync()
@@ -53,11 +51,11 @@ namespace Chat.Infrastructure.Persistence.Repositories
             await _user.DeleteOneAsync(x => x.Id == id);
         }
 
-        public async Task<IReadOnlyList<User>> GetListByNicknameAsync(string nickname)
+        public async Task<IReadOnlyList<User>> GetListByNicknameAsync(string nickname, string yourNickname)
         {
             if (string.IsNullOrEmpty(nickname))
                 return null;
-            return await _user.Find(x => x.Deleted != true && x.Nickname.Contains(nickname)).ToListAsync();
+            return await _user.Find(x => x.Deleted != true && (x.Nickname.Contains(nickname)) && (x.Nickname != yourNickname)).ToListAsync();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Chat.Application.Features.User.Commands.CreateUser
     public class CreateUserCommand : IRequest<Response<Domain.Entities.User>>
     {
         public string Nickname { get; set; }
+        public string AvatarBgColor { get; set; }
     }
 
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Response<Domain.Entities.User>>
@@ -31,9 +32,10 @@ namespace Chat.Application.Features.User.Commands.CreateUser
 
                 var newUser = await _userRepositoryAsync.CreateAsync(new Domain.Entities.User
                 {
-                    Created = DateTime.Now,
                     Nickname = request.Nickname,
-                    Status = true
+                    AvatarBgColor = request.AvatarBgColor,
+                    Status = true,
+                    IsOnline = true
                 });
 
                 return new Response<Domain.Entities.User>(newUser);

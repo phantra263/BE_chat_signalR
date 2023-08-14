@@ -9,8 +9,7 @@ namespace Chat.Application.Features.User.Commands.DeleteUser
 {
     public class DeleteUserCommand : IRequest<Response<string>>
     {
-        public string User1Id { get; set; }
-        public string User2Id { get; set; }
+        public string UserId { get; set; }
     }
 
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Response<string>>
@@ -31,11 +30,11 @@ namespace Chat.Application.Features.User.Commands.DeleteUser
             try
             {
                 // del box chat
-                await _boxRepositoryAsync.FindAndDeleteByUserAsync(request.User1Id, request.User2Id);
+                //await _boxRepositoryAsync.FindAndDeleteByUserAsync(request.User1Id, request.User2Id);
 
+                await _userRepositoryAsync.DeleteAsync(request.UserId);
 
-
-                return new Response<string>("");
+                return new Response<string>("Xóa thành công");
             }
             catch(Exception ex)
             {

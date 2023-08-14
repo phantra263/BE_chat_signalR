@@ -1,7 +1,8 @@
+using Chat.API.BackgroundServices;
+using Chat.API.SignalR;
 using Chat.Application;
 using Chat.Infrastructure.Persistence;
 using Lab.SignalR_Chat.BE.Extensions;
-using Lab.SignalR_Chat.BE.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,9 @@ namespace Lab.SignalR_Chat.BE
 
             // signalR
             services.AddSignalR();
+
+            // add worker background service
+            services.AddHostedService<Worker>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -52,7 +56,7 @@ namespace Lab.SignalR_Chat.BE
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/hub/chat");
+                endpoints.MapHub<MessageHub>("/hub/chat");
             });
         }
     }

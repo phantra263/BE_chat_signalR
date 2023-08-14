@@ -9,7 +9,7 @@ namespace Chat.Application.Interfaces.IRepositories
         Task<IReadOnlyList<User>> GetAsync();
         Task<User> GetByIdAsync(string id);
         Task<User> GetByNicknameAsync(string nickname);
-        Task<IReadOnlyList<User>> GetListByNicknameAsync(string nickname);
+        Task<IReadOnlyList<User>> GetListByNicknameAsync(string nickname, string yourNickname);
         Task<User> CreateAsync(User user);
         Task UpdateAsync(string id, User user);
         Task DeleteAsync(string id);

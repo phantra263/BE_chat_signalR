@@ -17,12 +17,10 @@ namespace Chat.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetMessageBox")]
-        public async Task<IActionResult> Get([FromQuery] GetMessageParameter parameter)
+        [HttpGet("{conversationId}")]
+        public async Task<IActionResult> Get(string conversationId)
         {
-            var query = _mapper.Map<GetMessageQuery>(parameter);
-
-            return Ok(await Mediator.Send(query));
+            return Ok(await Mediator.Send(new GetByConversationIdQuery { ConversationId = conversationId }));
         }
     }
 }

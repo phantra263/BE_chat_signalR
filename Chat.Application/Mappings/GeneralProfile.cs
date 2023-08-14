@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using Chat.Application.Features.Message.Queries.GetMessages;
+using Chat.Application.Features.Box.Queries.GetBoxLatestMessage;
+using Chat.Application.Features.Box.Queries.GetBoxMessage;
+using Chat.Domain.Entities;
 
 namespace Esuhai.HRM.Application.Mappings
 {
@@ -7,7 +9,11 @@ namespace Esuhai.HRM.Application.Mappings
     {
         public GeneralProfile()
         {
-            CreateMap<GetMessageParameter, GetMessageQuery>();
+            CreateMap<GetBoxMessageParameter, GetBoxMessageQuery>();
+            CreateMap<Box, GetBoxMessageViewModel>();
+
+            CreateMap<GetBoxLatestMessageParameter, GetBoxLatestMessageQuery>();
+            CreateMap<Box, GetBoxLatestMessageViewModel>();
         }
     }
 }

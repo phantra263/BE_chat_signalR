@@ -55,5 +55,18 @@ namespace Chat.Infrastructure.Persistence.Repositories
                 .Limit(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<Message> GetLatestMessageChatAsync(string senderId, string receiverId)
+        {
+            return await _message
+                .Find(x => x.Deleted != true && ((x.SenderId == senderId && x.ReceiverId == receiverId) || (x.SenderId == receiverId && x.ReceiverId == senderId)))
+                .SortByDescending(x => x.Created)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<Message>> GetMessageByConversation(string conversationId)
+        {
+            return await _message.Find(x => x.Deleted != true && x.ConversationId == conversationId).ToListAsync();
+        }
     }
 }

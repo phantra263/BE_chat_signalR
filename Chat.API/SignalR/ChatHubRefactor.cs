@@ -1,12 +1,12 @@
-﻿using Chat.Application.Logging;
+﻿using Chat.API.Models.Requests;
+using Chat.Application.Logging;
 using Chat.Application.Wrappers;
-using Lab.SignalR_Chat.BE.Models.Requests;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Lab.SignalR_Chat.BE.SignalR
+namespace Chat.API.SignalR
 {
     public class ChatHubRefactor : Hub
     {
@@ -76,7 +76,7 @@ namespace Lab.SignalR_Chat.BE.SignalR
             {
                 foreach (var connectionId in usersOnline[userId])
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content, request.timming }));
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
                 }
 
                 if (!userId.Equals(request.receiverId))
@@ -85,10 +85,10 @@ namespace Lab.SignalR_Chat.BE.SignalR
                     foreach (var connectionId in usersOnline[request.receiverId])
                     {
                         ++cnt;
-                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content, request.timming }));
+                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
 
                         if (cnt == 1)
-                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName} vào lúc {request.timming}" }));
+                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}" }));
                     }
                 }
             }
@@ -110,13 +110,13 @@ namespace Lab.SignalR_Chat.BE.SignalR
             {
                 foreach (var connectionId in connectionIds)
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content, request.timming }));
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
                 }
             }
 
             async Task SendNotification(string connectionId)
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName} vào lúc {request.timming}" }));
+                await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}" }));
             }
 
             if (usersOnline.TryGetValue(userId, out var senderConnections))

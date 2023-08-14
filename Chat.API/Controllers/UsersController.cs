@@ -11,15 +11,15 @@ namespace Chat.API.Controllers
     public class UsersController : BaseApiController
     {
         [HttpGet("SearchUser")]
-        public async Task<IActionResult> Get([FromQuery] string nickname)
+        public async Task<IActionResult> Get([FromQuery] GetByNicknameParameter parameter)
         {
-            return Ok(await Mediator.Send(new GetByNicknameQuery { Nickname = nickname }));
+            return Ok(await Mediator.Send(new GetByNicknameQuery { Nickname = parameter.Nickname, YourNickname = parameter.YourNickname }));
         }
 
-        [HttpPost("{nickname}")]
-        public async Task<IActionResult> Post(string nickname)
+        [HttpPost("CreateNickname")]
+        public async Task<IActionResult> Post(CreateUserParameter parameter)
         {
-            return Ok(await Mediator.Send(new CreateUserCommand { Nickname = nickname }));
+            return Ok(await Mediator.Send(new CreateUserCommand { Nickname = parameter.Nickname, AvatarBgColor = parameter.AvatarBgColor }));
         }
     }
 }

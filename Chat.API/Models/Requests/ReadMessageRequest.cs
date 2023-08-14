@@ -1,4 +1,4 @@
-﻿namespace Lab.SignalR_Chat.BE.Models.Requests
+﻿namespace Chat.API.Models.Requests
 {
     public class ReadMessageRequest
     {

@@ -26,17 +26,19 @@ namespace Chat.Application.Features.Box.Commands.CreateBox
         {
             try
             {
+                // check đã tạo cuộc hội thoại giữa us1 vs us2 trước đây chưa
                 var boxExist = await _boxRepositoryAsync.GetCheckExist(request.User1Id, request.User2Id);
                 if (boxExist != null)
                     return new Response<Domain.Entities.Box>("Đã tồn tại cuộc hội thoại này");
 
+                // check user 2 đã tạo hội thoại trước đó chưa
+                var boxAccessBefore = await _boxRepositoryAsync.GetCheckUsr2AccessUsr1(request.User1Id, request.User2Id);
+
                 var box = await _boxRepositoryAsync.CreateAsync(new Domain.Entities.Box
                 {
-                    Created = DateTime.Now,
-                    IsLock = false,
-                    IsMute = false,
                     User1Id = request.User1Id,
-                    User2Id = request.User2Id
+                    User2Id = request.User2Id,
+                    ConversationId = boxAccessBefore != null ? boxAccessBefore.ConversationId : $"{request.User1Id}{request.User2Id}"
                 });
 
                 return new Response<Domain.Entities.Box>(box);

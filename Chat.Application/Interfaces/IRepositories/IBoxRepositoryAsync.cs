@@ -12,6 +12,8 @@ namespace Chat.Application.Interfaces.IRepositories
         Task UpdateAsync(string id, Box box);
         Task DeleteByIdAsync(string id);
         Task<Box> GetCheckExist(string user1Id, string user2Id);
+        Task<Box> GetCheckUsr2AccessUsr1(string user1Id, string user2Id);
         Task FindAndDeleteByUserAsync(string user1Id, string user2Id);
+        Task<IReadOnlyList<Box>> GetBoxsUserChatWith(string userChatWithId);
     }
 }

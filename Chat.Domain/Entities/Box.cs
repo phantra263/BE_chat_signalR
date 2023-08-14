@@ -13,10 +13,14 @@ namespace Chat.Domain.Entities
         public string Id { get; set; }
 
         [JsonProperty("Created")]
-        public DateTime Created { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
 
         [JsonProperty("Deleted")]
         public bool Deleted { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        [JsonProperty("ConversationId")]
+        public string ConversationId { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]
         [JsonProperty("User1Id")]

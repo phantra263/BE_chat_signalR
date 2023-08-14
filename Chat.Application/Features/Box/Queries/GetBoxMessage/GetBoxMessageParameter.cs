@@ -1,8 +1,8 @@
 ﻿using Chat.Application.Parameters;
 
-namespace Chat.Application.Features.Message.Queries.GetMessages
+namespace Chat.Application.Features.Box.Queries.GetBoxMessage
 {
-    public class GetMessageParameter : RequestParameter
+    public class GetBoxMessageParameter : RequestParameter
     {
         public string Keyword { get; set; }
         public string SenderId { get; set; }

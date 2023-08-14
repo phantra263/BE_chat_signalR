@@ -57,5 +57,16 @@ namespace Chat.Infrastructure.Persistence.Repositories
         {
             await _box.DeleteOneAsync(x => x.Deleted != true && x.User1Id == user1Id && x.User2Id == user2Id);
         }
+
+        // func check user 2 đã tạo hội thoại trước đó chưa
+        public async Task<Box> GetCheckUsr2AccessUsr1(string user1Id, string user2Id)
+        {
+            return await _box.Find(x => x.Deleted != true && x.User1Id == user2Id && x.User2Id == user1Id).FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<Box>> GetBoxsUserChatWith(string userChatWithId)
+        {
+            return await _box.Find(x => x.Deleted != true && x.User2Id == userChatWithId).ToListAsync();
+        }
     }
 }

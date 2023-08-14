@@ -13,7 +13,7 @@ namespace Chat.Domain.Entities
         public string Id { get; set; }
 
         [JsonProperty("Created")]
-        public DateTime Created { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
 
         [JsonProperty("Deleted")]
         public bool Deleted { get; set; }
@@ -21,7 +21,13 @@ namespace Chat.Domain.Entities
         [JsonProperty("Nickname")]
         public string Nickname { get; set; }
 
+        [JsonProperty("AvatarBgColor")]
+        public string AvatarBgColor { get; set; }
+
         [JsonProperty("Status")]
         public bool Status { get; set; }
+
+        [JsonProperty("IsOnline")]
+        public bool IsOnline { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace Chat.Application.Features.User.Queries.GetByNickname
     public class GetByNicknameQuery : IRequest<PagedResponse<IReadOnlyList<Domain.Entities.User>>>
     {
         public string Nickname { get; set; }
+        public string YourNickname { get; set; }
     }
 
     public class GetByNicknameQueryHandler : IRequestHandler<GetByNicknameQuery, PagedResponse<IReadOnlyList<Domain.Entities.User>>>
@@ -26,7 +27,7 @@ namespace Chat.Application.Features.User.Queries.GetByNickname
         {
             try
             {
-                var users = await _userRepositoryAsync.GetListByNicknameAsync(request.Nickname);
+                var users = await _userRepositoryAsync.GetListByNicknameAsync(request.Nickname, request.YourNickname);
 
                 return new PagedResponse<IReadOnlyList<Domain.Entities.User>>(users);
             }

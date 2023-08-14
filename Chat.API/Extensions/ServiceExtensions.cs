@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Chat.API.SignalR.PresenceTracker;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 
@@ -58,6 +59,8 @@ namespace Lab.SignalR_Chat.BE.Extensions
                                   });
             });
             #endregion
+
+            services.AddTransient<IPresenceTracker, PresenceTracker>();
         }
     }
 }
