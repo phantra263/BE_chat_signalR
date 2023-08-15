@@ -90,10 +90,7 @@ namespace Chat.API.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
 
         public async Task SendMessage(MessageRequest request)
         {
@@ -149,11 +146,6 @@ namespace Chat.API.SignalR
                     }
                 }
             }
-        }
-
-        public async Task Test()
-        {
-            await Clients.All.SendAsync("OnTest", "Server đã nhận");
         }
     }
 }

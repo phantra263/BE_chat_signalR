@@ -19,9 +19,6 @@ namespace Chat.API.Controllers
 
         [HttpGet("GetByConversation")]
         public async Task<IActionResult> Get([FromQuery] GetByConversationIdParameter parameter)
-        {
-            var query = _mapper.Map<GetByConversationIdQuery>(parameter);
-            return Ok(await Mediator.Send(query));
-        }
+            => Ok(await Mediator.Send(_mapper.Map<GetByConversationIdQuery>(parameter)));
     }
 }
