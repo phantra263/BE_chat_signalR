@@ -59,7 +59,7 @@ namespace Chat.Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<Box>> GetBoxsUserChatWith(string userChatWithId)
             => await _box.Find(x => x.Deleted != true && x.User2Id == userChatWithId).ToListAsync();
 
-        public async Task<IReadOnlyList<GetBoxChatByUserIdViewModel>> GetBoxChatByUserId(string userId)
+        public async Task<IReadOnlyList<GetBoxChatByUserIdViewModel>> GetBoxChatByUserId(int pageNumber, int pageSize, string keyword, string userId)
         {
             //var lastMessage = await _message.Find(x => x.Deleted != true && (x.SenderId == userId || x.ReceiverId == userId)).ToListAsync();
             //var results =
@@ -97,20 +97,59 @@ namespace Chat.Infrastructure.Persistence.Repositories
             //         .As<BsonDocument>()
             //         .ToList();
 
-            var docs = _box.Aggregate()
-                     .Lookup(_user.CollectionNamespace.CollectionName
-                         , "Users.User1Id"
-                         , "_id"
-                         , "asUsers")
-                     .As<BsonDocument>()
-                     .ToList();
+            //var docs = _box.Aggregate()
+            //         .Lookup(_user.CollectionNamespace.CollectionName
+            //             , "Users.User1Id"
+            //             , "_id"
+            //             , "asUsers")
+            //         .As<BsonDocument>()
+            //         .ToList();
 
-            foreach (var doc in docs)
+            //foreach (var doc in docs)
+            //{
+            //    Console.WriteLine(doc.ToJson());
+            //}
+
+            var boxs = await _box.Find(x => x.Deleted != true && x.User1Id == userId)
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Limit(pageSize)
+                                 .ToListAsync();
+
+            var messages = await _message.Find(x => x.Deleted != true && (x.SenderId == userId || x.ReceiverId == userId)).ToListAsync();
+
+            var results = new List<GetBoxChatByUserIdViewModel>();
+            foreach (var box in boxs)
             {
-                Console.WriteLine(doc.ToJson());
+                var user = await _user.Find(x => x.Deleted != true &&
+                                            x.Id == box.User2Id &&
+                                            (x.Nickname.Contains(keyword) || string.IsNullOrEmpty(keyword)))
+                                      .FirstOrDefaultAsync();
+
+                var latestMessage = await _message.Find(x => x.Deleted != true && x.ConversationId == box.ConversationId)
+                                                  .SortByDescending(x => x.Created)
+                                                  .FirstOrDefaultAsync();
+
+                results.Add(new GetBoxChatByUserIdViewModel
+                {
+                    Id = box?.Id,
+                    ConversationId = box?.ConversationId,
+                    IsLock = box?.IsLock,
+                    IsMute = box?.IsMute,
+                    UserId = user?.Id,
+                    Nickname = user?.Nickname,
+                    AvatarBgColor = user?.AvatarBgColor,
+                    Status = user?.Status,
+                    IsOnline = user?.IsOnline,
+                    Content = latestMessage?.Content,
+                    IsSeen = latestMessage?.IsSeen,
+                    Created = latestMessage?.Created
+                });
             }
 
-            return new List<GetBoxChatByUserIdViewModel>();
+            return results;
         }
+
+        public async Task<IReadOnlyList<Box>> GetByConversationId(string conversationId)
+            => await _box.Find(x => x.Deleted != true && x.ConversationId == conversationId).ToListAsync();
     }
 }

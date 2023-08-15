@@ -7,6 +7,7 @@ namespace Chat.Application.Wrappers
         public Response()
         {
         }
+
         public Response(T data, string message = null)
         {
             Succeeded = true;

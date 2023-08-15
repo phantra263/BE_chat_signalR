@@ -1,4 +1,5 @@
-﻿using Chat.API.SignalR.PresenceTracker;
+﻿using Chat.API.BackgroundServices;
+using Chat.API.SignalR.PresenceTracker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace Lab.SignalR_Chat.BE.Extensions
                 options.AddPolicy(name: "AllowCors",
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200", "https://box-messenger.netlify.app", "https://chat-realtime-signalr.netlify.app")
+                                      builder.WithOrigins("http://localhost:4200")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials();
@@ -61,6 +62,12 @@ namespace Lab.SignalR_Chat.BE.Extensions
             #endregion
 
             services.AddTransient<IPresenceTracker, PresenceTracker>();
+
+            // signalR
+            services.AddSignalR();
+
+            // add worker background service
+            services.AddHostedService<Worker>();
         }
     }
 }

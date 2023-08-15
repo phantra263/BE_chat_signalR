@@ -1,4 +1,5 @@
-﻿using Chat.Domain.Entities;
+﻿using Chat.Application.Features.Message.Queries.GetByConversationId;
+using Chat.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,6 +14,6 @@ namespace Chat.Application.Interfaces.IRepositories
         Task DeleteAsync(string id);
         Task<IReadOnlyList<Message>> GetMessageChatAsync(int pageNumber, int pageSize, string keyword, string senderId, string receiverId);
         Task<Message> GetLatestMessageChatAsync(string senderId, string receiverId);
-        Task<IReadOnlyList<Message>> GetMessageByConversation(string conversationId);
+        Task<IReadOnlyList<HistoryChatModel>> GetMessageByConversation(int pageNumber, int pageSize, string keyword, string conversationId);
     }
 }

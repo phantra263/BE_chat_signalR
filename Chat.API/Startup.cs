@@ -1,4 +1,3 @@
-using Chat.API.BackgroundServices;
 using Chat.API.SignalR;
 using Chat.Application;
 using Chat.Infrastructure.Persistence;
@@ -26,12 +25,6 @@ namespace Lab.SignalR_Chat.BE
             services.AddPersistenceLayer(Configuration);
             services.AddApplicationLayer();
             services.AddBackendLayer();
-
-            // signalR
-            services.AddSignalR();
-
-            // add worker background service
-            services.AddHostedService<Worker>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

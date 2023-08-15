@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Chat.Application.Wrappers
+﻿namespace Chat.Application.Wrappers
 {
     public class PagedResponse<T> : Response<T>
     {

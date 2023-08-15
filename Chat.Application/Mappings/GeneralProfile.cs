@@ -2,6 +2,7 @@
 using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
 using Chat.Application.Features.Box.Queries.GetBoxLatestMessage;
 using Chat.Application.Features.Box.Queries.GetBoxMessage;
+using Chat.Application.Features.Message.Queries.GetByConversationId;
 using Chat.Application.Features.User.Commands.Authenticate;
 using Chat.Application.Features.User.Commands.Register;
 using Chat.Application.Features.User.Queries.GetByNickname;
@@ -28,6 +29,8 @@ namespace Esuhai.HRM.Application.Mappings
 
             CreateMap<GetBoxLatestMessageParameter, GetBoxLatestMessageQuery>();
             CreateMap<Box, GetBoxLatestMessageViewModel>();
+
+            CreateMap<GetByConversationIdParameter, GetByConversationIdQuery>();
         }
     }
 }

@@ -12,11 +12,12 @@ namespace Chat.Application.Interfaces.IRepositories
         Task<Box> CreateAsync(Box box);
         Task UpdateAsync(string id, Box box);
         Task DeleteByIdAsync(string id);
-        Task<IReadOnlyList<GetBoxChatByUserIdViewModel>> GetBoxChatByUserId(string userId);
+        Task<IReadOnlyList<GetBoxChatByUserIdViewModel>> GetBoxChatByUserId(int pageNumber, int pageSize, string keyword, string userId);
 
         Task<Box> GetCheckExist(string user1Id, string user2Id);
         Task<Box> GetCheckUsr2AccessUsr1(string user1Id, string user2Id);
         Task FindAndDeleteByUserAsync(string user1Id, string user2Id);
         Task<IReadOnlyList<Box>> GetBoxsUserChatWith(string userChatWithId);
+        Task<IReadOnlyList<Box>> GetByConversationId(string conversationId);
     }
 }

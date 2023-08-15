@@ -26,7 +26,7 @@ namespace Chat.API.Controllers
         //public async Task<IActionResult> Get([FromQuery] GetBoxMessageParameter parameter)
         //    => Ok(await Mediator.Send(_mapper.Map<GetBoxMessageQuery>(parameter)));
 
-        [HttpGet("GetBoxLatestMessage")]
+        [HttpGet("GetBoxSelected")]
         public async Task<IActionResult> Get([FromQuery] GetBoxLatestMessageParameter parameter)
             => Ok(await Mediator.Send(_mapper.Map<GetBoxLatestMessageQuery>(parameter)));
 

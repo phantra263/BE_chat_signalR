@@ -19,18 +19,26 @@ namespace Chat.Application.Features.Box.Queries.GetBoxLatestMessage
         private readonly IMapper _mapper;
         private readonly IMessageRepositoryAsync _messageRepositoryAsync;
         private readonly IBoxRepositoryAsync _boxRepositoryAsync;
+        private readonly IUserRepositoryAsync _userRepositoryAsync;
 
-        public GetLatestMessageBoxQueryHandler(IMapper mapper, IMessageRepositoryAsync messageRepositoryAsync, IBoxRepositoryAsync boxRepositoryAsync)
+        public GetLatestMessageBoxQueryHandler(IMapper mapper, IMessageRepositoryAsync messageRepositoryAsync, IBoxRepositoryAsync boxRepositoryAsync, IUserRepositoryAsync userRepositoryAsync)
         {
             _mapper = mapper;
             _messageRepositoryAsync = messageRepositoryAsync;
             _boxRepositoryAsync = boxRepositoryAsync;
+            _userRepositoryAsync = userRepositoryAsync;
         }
 
         public async Task<Response<GetBoxLatestMessageViewModel>> Handle(GetBoxLatestMessageQuery request, CancellationToken cancellationToken)
         {
             try
             {
+                var sender = await _userRepositoryAsync.GetByIdAsync(request.SenderId);
+                var receiver = await _userRepositoryAsync.GetByIdAsync(request.ReceiverId);
+
+                if (receiver == null || sender == null)
+                    return new Response<GetBoxLatestMessageViewModel>("Người dùng không tồn tại");
+
                 var viewModel = new GetBoxLatestMessageViewModel();
 
                 // get thông tin box chat, nếu chưa có thì tạo mới
@@ -57,7 +65,15 @@ namespace Chat.Application.Features.Box.Queries.GetBoxLatestMessage
 
                 var message = await _messageRepositoryAsync.GetLatestMessageChatAsync(request.SenderId, request.ReceiverId);
 
-                viewModel.Message = message;
+                viewModel.UserId = receiver.Id;
+                viewModel.Nickname = receiver.Nickname;
+                viewModel.AvatarBgColor = receiver.AvatarBgColor;
+                viewModel.Status = receiver.Status;
+                viewModel.IsOnline = receiver.IsOnline;
+
+                viewModel.Content = message?.Content;
+                viewModel.IsSeen = message?.IsSeen;
+                viewModel.Created = message?.Created;
 
                 return new Response<GetBoxLatestMessageViewModel>(viewModel);
             }

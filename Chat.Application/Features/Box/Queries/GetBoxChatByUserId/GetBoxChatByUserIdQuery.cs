@@ -25,6 +25,6 @@ namespace Chat.Application.Features.Box.Queries.GetBoxChatByUserId
         }
 
         public async Task<PagedResponse<IReadOnlyList<GetBoxChatByUserIdViewModel>>> Handle(GetBoxChatByUserIdQuery request, CancellationToken cancellationToken)
-            => new PagedResponse<IReadOnlyList<GetBoxChatByUserIdViewModel>>(await _boxRepositoryAsync.GetBoxChatByUserId(request.UserId), request.PageNumber, request.PageSize);
+            => new PagedResponse<IReadOnlyList<GetBoxChatByUserIdViewModel>>(await _boxRepositoryAsync.GetBoxChatByUserId(request.PageNumber, request.PageSize, request.Keyword, request.UserId), request.PageNumber, request.PageSize);
     }
 }
