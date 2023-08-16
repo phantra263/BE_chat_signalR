@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
-using Chat.Application.Features.Box.Queries.GetBoxLatestMessage;
+using Chat.Application.Features.Box.Queries.GetBoxSelected;
 using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -27,8 +27,8 @@ namespace Chat.API.Controllers
         //    => Ok(await Mediator.Send(_mapper.Map<GetBoxMessageQuery>(parameter)));
 
         [HttpGet("GetBoxSelected")]
-        public async Task<IActionResult> Get([FromQuery] GetBoxLatestMessageParameter parameter)
-            => Ok(await Mediator.Send(_mapper.Map<GetBoxLatestMessageQuery>(parameter)));
+        public async Task<IActionResult> Get([FromQuery] GetBoxSelectedParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<GetBoxSelectedQuery>(parameter)));
 
         [HttpGet("GetByUserId")]
         public async Task<IActionResult> Get([FromQuery] GetBoxChatByUserIdParameter parameter)

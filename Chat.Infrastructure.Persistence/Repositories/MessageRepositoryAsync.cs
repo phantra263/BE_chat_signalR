@@ -71,27 +71,60 @@ namespace Chat.Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<HistoryChatModel>> GetMessageByConversation(int pageNumber, int pageSize, string keyword, string conversationId)
         {
             var results = (from mess in _message.AsQueryable().Where(x => x.Deleted != true && x.ConversationId == conversationId)
-                          join sender in _user.AsQueryable() on mess.SenderId equals sender.Id
-                          join receiver in _user.AsQueryable() on mess.ReceiverId equals receiver.Id
-                          select new HistoryChatModel
-                          {
-                              Id = mess.Id,
-                              Created = mess.Created,
-                              Deleted = mess.Deleted,
-                              ConversationId = mess.ConversationId,
-                              SenderId = mess.SenderId,
-                              SenderName = sender.Nickname,
-                              ReceiverId = mess.ReceiverId,
-                              ReceiverName = receiver.Nickname,
-                              Content = mess.Content,
-                              IsSeen = mess.IsSeen
-                          })
-                         .OrderByDescending(x => x.Created)
+                           join sender in _user.AsQueryable() on mess.SenderId equals sender.Id
+                           join receiver in _user.AsQueryable() on mess.ReceiverId equals receiver.Id
+                           select new HistoryChatModel
+                           {
+                               id = mess.Id,
+                               created = mess.Created,
+                               deleted = mess.Deleted,
+                               conversationId = mess.ConversationId,
+                               senderId = mess.SenderId,
+                               senderName = sender.Nickname,
+                               receiverId = mess.ReceiverId,
+                               receiverName = receiver.Nickname,
+                               content = mess.Content,
+                               isSeen = mess.IsSeen
+                           })
+                         .OrderByDescending(x => x.created)
                          .Skip((pageNumber - 1) * pageSize)
                          .Take(pageSize)
                          .ToList();
 
-            return results.OrderBy(x => x.Created).ToList();
+            return results.OrderBy(x => x.created).ToList();
         }
+
+        public async Task<IReadOnlyList<Message>> GetByConversationId(string conversationId)
+            => await _message.Find(x => x.Deleted != true && x.ConversationId == conversationId).ToListAsync();
+
+        public async Task UpdateOneById(string id)
+        {
+            var filter = Builders<Message>.Filter.And(
+                    Builders<Message>.Filter.Eq(x => x.IsSeen, false),
+                    Builders<Message>.Filter.Eq(x => x.Id, id)
+                );
+
+            var update = Builders<Message>.Update.Set(x => x.IsSeen, true);
+
+            await _message.UpdateOneAsync(filter, update);
+        }
+
+        public async Task UpdateManyByConversation(string conversationId)
+        {
+            var filter = Builders<Message>.Filter.And(
+                    Builders<Message>.Filter.Eq(x => x.IsSeen, false),
+                    Builders<Message>.Filter.Eq(x => x.ConversationId, conversationId)
+                );
+
+            var update = Builders<Message>.Update.Set(x => x.IsSeen, true);
+
+            await _message.UpdateManyAsync(filter, update);
+        }
+
+        public async Task<Message> GetLatestMessageByConversation(string conversationId)
+            => await _message
+                .Find(x => x.Deleted != true && x.ConversationId == conversationId)
+                .SortByDescending(x => x.Created)
+                .FirstOrDefaultAsync();
     }
 }

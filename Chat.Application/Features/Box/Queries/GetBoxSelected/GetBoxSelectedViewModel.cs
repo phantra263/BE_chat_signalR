@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Chat.Application.Features.Box.Queries.GetBoxLatestMessage
+namespace Chat.Application.Features.Box.Queries.GetBoxSelected
 {
-    public class GetBoxLatestMessageViewModel
+    public class GetBoxSelectedViewModel
     {
         public string Id { get; set; }
         public string ConversationId { get; set; }

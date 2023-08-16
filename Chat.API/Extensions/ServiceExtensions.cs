@@ -53,7 +53,7 @@ namespace Lab.SignalR_Chat.BE.Extensions
                 options.AddPolicy(name: "AllowCors",
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200")
+                                      builder.WithOrigins("http://localhost:4200", "https://chat-realtime-signalr.netlify.app")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials();

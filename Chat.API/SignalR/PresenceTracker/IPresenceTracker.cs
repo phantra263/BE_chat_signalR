@@ -7,7 +7,7 @@ namespace Chat.API.SignalR.PresenceTracker
     {
         Task<bool> UserConnected(string userId, string connectionId);
         Task<bool> UserDisconnected(string userId, string connectionId);
-        Task<List<string>> GetConnectionIds(string userId);
+        List<string> GetConnectionIds(string userId);
         Task<Dictionary<string, List<string>>> GetUserOnlines();
     }
 }

@@ -2,7 +2,7 @@
 {
     public class ReadMessageRequest
     {
-        public string receiverId { get; set; }
-        public bool seen { get; set; }
+        public string ReceiverId { get; set; }
+        public bool IsSeen { get; set; }
     }
 }

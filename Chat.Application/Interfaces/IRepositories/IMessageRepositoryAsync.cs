@@ -14,6 +14,11 @@ namespace Chat.Application.Interfaces.IRepositories
         Task DeleteAsync(string id);
         Task<IReadOnlyList<Message>> GetMessageChatAsync(int pageNumber, int pageSize, string keyword, string senderId, string receiverId);
         Task<Message> GetLatestMessageChatAsync(string senderId, string receiverId);
+        Task<Message> GetLatestMessageByConversation(string conversationId);
         Task<IReadOnlyList<HistoryChatModel>> GetMessageByConversation(int pageNumber, int pageSize, string keyword, string conversationId);
+        Task<IReadOnlyList<Message>> GetByConversationId(string conversationId);
+
+        Task UpdateOneById(string id);
+        Task UpdateManyByConversation(string conversationId);
     }
 }

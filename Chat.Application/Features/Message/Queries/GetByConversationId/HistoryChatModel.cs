@@ -4,15 +4,15 @@ namespace Chat.Application.Features.Message.Queries.GetByConversationId
 {
     public class HistoryChatModel
     {
-        public string Id { get; set; }
-        public DateTime? Created { get; set; }
-        public bool? Deleted { get; set; }
-        public string ConversationId { get; set; }
-        public string SenderId { get; set; }
-        public string SenderName { get; set; }
-        public string ReceiverId { get; set; }
-        public string ReceiverName { get; set; }
-        public string Content { get; set; }
-        public bool? IsSeen { get; set; }
+        public string id { get; set; }
+        public DateTime? created { get; set; }
+        public bool? deleted { get; set; }
+        public string conversationId { get; set; }
+        public string senderId { get; set; }
+        public string senderName { get; set; }
+        public string receiverId { get; set; }
+        public string receiverName { get; set; }
+        public string content { get; set; }
+        public bool? isSeen { get; set; }
     }
 }

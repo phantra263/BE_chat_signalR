@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Chat.Application.Features.Box.Queries.GetBoxLatestMessage
+namespace Chat.Application.Features.Box.Queries.GetBoxSelected
 {
-    public class GetBoxLatestMessageQueryValidator : AbstractValidator<GetBoxLatestMessageQuery>
+    public class GetBoxSelectedQueryValidator : AbstractValidator<GetBoxSelectedQuery>
     {
-        public GetBoxLatestMessageQueryValidator()
+        public GetBoxSelectedQueryValidator()
         {
             RuleFor(p => p.SenderId)
                 .NotEmpty()

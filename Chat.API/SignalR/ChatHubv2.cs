@@ -69,24 +69,24 @@ namespace Chat.API.SignalR
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var response = new Response<object>(new { ConversationId = request.conversationId, SenderId = userId, SenderName = request.senderName, ReceiverId = request.receiverId, Content = request.content });
+                var response = new Response<object>(new { ConversationId = request.ConversationId, SenderId = userId, SenderName = request.SenderName, ReceiverId = request.ReceiverId, Content = request.Content });
 
                 foreach (var connectionId in GetConnectionIds(userId))
                 {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
                 }
 
-                if (!userId.Equals(request.receiverId))
+                if (!userId.Equals(request.ReceiverId))
                 {
                     int cnt = 0;
-                    foreach (var connectionId in GetConnectionIds(request.receiverId))
+                    foreach (var connectionId in GetConnectionIds(request.ReceiverId))
                     {
                         ++cnt;
                         await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
 
                         // gửi thông báo cho user khi có tin nhắn mới
                         if (cnt == 1)
-                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}" }));
+                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.SenderName}" }));
                     }
                 }
             }
@@ -98,16 +98,16 @@ namespace Chat.API.SignalR
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var response = new Response<object>(new { SenderId = userId, ReceiverId = request.receiverId, Seen = request.seen });
+                var response = new Response<object>(new { SenderId = userId, ReceiverId = request.ReceiverId, Seen = request.IsSeen });
 
                 foreach (var connectionId in GetConnectionIds(userId))
                 {
                     await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
                 }
 
-                if (!userId.Equals(request.receiverId))
+                if (!userId.Equals(request.ReceiverId))
                 {
-                    foreach (var connectionId in GetConnectionIds(request.receiverId))
+                    foreach (var connectionId in GetConnectionIds(request.ReceiverId))
                     {
                         await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
                     }

@@ -49,9 +49,9 @@ namespace Chat.API.SignalR.PresenceTracker
             return Task.FromResult(isOffline);
         }
 
-        public Task<List<string>> GetConnectionIds(string userId)
+        public List<string> GetConnectionIds(string userId)
         {
-            return Task.FromResult(usersOnline.ContainsKey(userId) ? usersOnline[userId] : new List<string>());
+            return usersOnline.ContainsKey(userId) ? usersOnline[userId] : new List<string>();
         }
 
         public async Task<Dictionary<string, List<string>>> GetUserOnlines()

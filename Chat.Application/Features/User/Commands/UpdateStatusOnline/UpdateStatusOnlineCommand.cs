@@ -35,7 +35,7 @@ namespace Chat.Application.Features.User.Commands.UpdateStatusOnline
 
                 await _userRepositoryAsync.UpdateAsync(request.Id, user);
 
-                return new Response<string>("Update trang thái thành công");
+                return new Response<string>(null, "Update trang thái thành công");
             }
             catch(Exception ex)
             {

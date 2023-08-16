@@ -1,6 +1,9 @@
-﻿using Chat.API.Models.Requests;
+﻿using AutoMapper;
+using Chat.API.Models.Requests;
 using Chat.API.SignalR.PresenceTracker;
 using Chat.Application.Features.Box.Queries.GetBoxChatWith;
+using Chat.Application.Features.Message.Commands.CreateMessage;
+using Chat.Application.Features.Message.Commands.UpdateMessage;
 using Chat.Application.Features.User.Commands.UpdateStatusOnline;
 using Chat.Application.Wrappers;
 using MediatR;
@@ -14,12 +17,14 @@ namespace Chat.API.SignalR
     {
         private readonly IPresenceTracker _presenceTracker;
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
         //private readonly IHostedService _backgroundService;
 
-        public MessageHub(IPresenceTracker presenceTracker, IMediator mediator)
+        public MessageHub(IPresenceTracker presenceTracker, IMediator mediator, IMapper mapper)
         {
             _presenceTracker = presenceTracker;
             _mediator = mediator;
+            _mapper = mapper;
             //_backgroundService = backgroundService;
         }
 
@@ -27,22 +32,19 @@ namespace Chat.API.SignalR
         {
             var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
 
-            if (string.IsNullOrEmpty(userId))
-                return;
+            if (string.IsNullOrEmpty(userId)) return;
 
             var isUserOnline = await _presenceTracker.UserConnected(userId, Context.ConnectionId);
 
             var updStatus = await _mediator.Send(new UpdateStatusOnlineCommand { Id = userId, IsOnline = true });
-            if (!updStatus.Succeeded)
-                return;
+            if (!updStatus.Succeeded) return;
 
             var listBoxChatWith = await _mediator.Send(new GetBoxChatWithQuery { UserChatWithId = userId });
-            if (!listBoxChatWith.Succeeded)
-                return;
+            if (!listBoxChatWith.Succeeded) return;
 
             foreach (var item in listBoxChatWith.Data)
             {
-                var connectionIds = await _presenceTracker.GetConnectionIds(item.User1Id);
+                var connectionIds = _presenceTracker.GetConnectionIds(item.User1Id);
                 foreach (var connectionId in connectionIds)
                 {
                     await Clients.Client(connectionId).SendAsync("OnConnected", new Response<object>(new { UserId = userId, IsOnline = isUserOnline }));
@@ -59,25 +61,22 @@ namespace Chat.API.SignalR
         {
             var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
 
-            if (string.IsNullOrEmpty(userId))
-                return;
+            if (string.IsNullOrEmpty(userId)) return;
 
             var isUserOffline = await _presenceTracker.UserDisconnected(userId, Context.ConnectionId);
 
-            if (!isUserOffline)
-                return;
+            if (!isUserOffline) return;
 
             var updStatus = await _mediator.Send(new UpdateStatusOnlineCommand { Id = userId, IsOnline = false });
             if (!updStatus.Succeeded)
                 return;
 
             var listBoxChatWith = await _mediator.Send(new GetBoxChatWithQuery { UserChatWithId = userId });
-            if (!listBoxChatWith.Succeeded)
-                return;
+            if (!listBoxChatWith.Succeeded) return;
 
             foreach (var item in listBoxChatWith.Data)
             {
-                var connectionIds = await _presenceTracker.GetConnectionIds(item.User1Id);
+                var connectionIds = _presenceTracker.GetConnectionIds(item.User1Id);
                 foreach (var connectionId in connectionIds)
                 {
                     await Clients.Client(connectionId).SendAsync("OnDisconnected", new Response<object>(new { UserId = userId, IsOnline = false }));
@@ -92,59 +91,70 @@ namespace Chat.API.SignalR
 
         protected override void Dispose(bool disposing) => base.Dispose(disposing);
 
-        public async Task SendMessage(MessageRequest request)
+        public async Task SendMessage(CreateMessageParameter parameter)
         {
             var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
 
-            if (string.IsNullOrEmpty(userId))
-                return;
+            if (string.IsNullOrEmpty(userId)) return;
 
-            var response = new Response<object>();
+            // add message to db
+            var command = _mapper.Map<CreateMessageCommand>(parameter);
+            command.SenderId = userId;
 
-            var senderConnectionIds = await _presenceTracker.GetConnectionIds(userId);
+            var result = await _mediator.Send(command);
+
+            if (!result.Succeeded) return;
+
+            // khoi tao view model return
+            var viewModel = _mapper.Map<CreateMessageViewModel>(result.Data);
+            viewModel.SenderId = userId;
+            viewModel.SenderName = parameter.SenderName;
+            viewModel.ReceiverName = parameter.ReceiverName;
+
+            // send signal den cac client
+            var senderConnectionIds = _presenceTracker.GetConnectionIds(userId);
             foreach (var connectionId in senderConnectionIds)
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", viewModel);
             }
 
-            var receiverConnectionIds = await _presenceTracker.GetConnectionIds(request.receiverId);
-            if (!userId.Equals(request.receiverId))
+            var receiverConnectionIds = _presenceTracker.GetConnectionIds(parameter.ReceiverId);
+            if (!userId.Equals(parameter.ReceiverId))   // nếu nó ko tự gửi cho chính nó
             {
                 int cnt = 0;
                 foreach (var connectionId in receiverConnectionIds)
                 {
                     ++cnt;
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", response);
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", viewModel);
 
                     // gửi thông báo cho user khi có tin nhắn mới
                     if (cnt == 1)
-                        await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}: \n{request.content}" }));
+                        await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {parameter.SenderName}: \n{parameter.Content}" }));
                 }
             }
         }
 
-        public async Task ReadMessage(ReadMessageRequest request)
+        public async Task ReadMessage(UpdateMessageParameter parameter)
         {
             var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
 
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId)) return;
+
+            var command = _mapper.Map<UpdateMessageCommand>(parameter);
+
+            var result = await _mediator.Send(command);
+            if (!result.Succeeded) return;
+
+            var senderConnectionIds = _presenceTracker.GetConnectionIds(userId);
+            foreach (var connectionId in senderConnectionIds)
             {
-                var response = new Response<object>(new { SenderId = userId, ReceiverId = request.receiverId, Seen = request.seen });
+                await Clients.Client(connectionId).SendAsync("OnReadMessage", result.Data);
+            }
 
-                var senderConnectionIds = await _presenceTracker.GetConnectionIds(userId);
-                foreach (var connectionId in senderConnectionIds)
-                {
-                    await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
-                }
-
-                var receiverConnectionIds = await _presenceTracker.GetConnectionIds(request.receiverId);
-                if (!userId.Equals(request.receiverId))
-                {
-                    foreach (var connectionId in receiverConnectionIds)
-                    {
-                        await Clients.Client(connectionId).SendAsync("OnReadMessage", response);
-                    }
-                }
+            var receiverConnectionIds = _presenceTracker.GetConnectionIds(userId == result.Data.ReceiverId ? result.Data.SenderId : result.Data.ReceiverId);
+            foreach (var connectionId in receiverConnectionIds)
+            {
+                await Clients.Client(connectionId).SendAsync("OnReadMessage", result.Data);
             }
         }
     }

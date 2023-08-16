@@ -76,19 +76,19 @@ namespace Chat.API.SignalR
             {
                 foreach (var connectionId in usersOnline[userId])
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.ConversationId, SenderId = userId, request.SenderName, request.ReceiverId, request.Content }));
                 }
 
-                if (!userId.Equals(request.receiverId))
+                if (!userId.Equals(request.ReceiverId))
                 {
                     int cnt = 0;
-                    foreach (var connectionId in usersOnline[request.receiverId])
+                    foreach (var connectionId in usersOnline[request.ReceiverId])
                     {
                         ++cnt;
-                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
+                        await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.ConversationId, SenderId = userId, request.SenderName, request.ReceiverId, request.Content }));
 
                         if (cnt == 1)
-                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}" }));
+                            await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.SenderName}" }));
                     }
                 }
             }
@@ -110,20 +110,20 @@ namespace Chat.API.SignalR
             {
                 foreach (var connectionId in connectionIds)
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.conversationId, SenderId = userId, request.senderName, request.receiverId, request.content }));
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", new Response<object>(new { request.ConversationId, SenderId = userId, request.SenderName, request.ReceiverId, request.Content }));
                 }
             }
 
             async Task SendNotification(string connectionId)
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.senderName}" }));
+                await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {request.SenderName}" }));
             }
 
             if (usersOnline.TryGetValue(userId, out var senderConnections))
             {
                 await SendToConnections(senderConnections);
 
-                if (!userId.Equals(request.receiverId) && usersOnline.TryGetValue(request.receiverId, out var receiverConnections))
+                if (!userId.Equals(request.ReceiverId) && usersOnline.TryGetValue(request.ReceiverId, out var receiverConnections))
                 {
                     int cnt = 0;
                     foreach (var connectionId in receiverConnections)

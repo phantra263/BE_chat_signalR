@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
-using Chat.Application.Features.Box.Queries.GetBoxLatestMessage;
 using Chat.Application.Features.Box.Queries.GetBoxMessage;
+using Chat.Application.Features.Box.Queries.GetBoxSelected;
+using Chat.Application.Features.Message.Commands.CreateMessage;
+using Chat.Application.Features.Message.Commands.UpdateMessage;
 using Chat.Application.Features.Message.Queries.GetByConversationId;
 using Chat.Application.Features.User.Commands.Authenticate;
 using Chat.Application.Features.User.Commands.Register;
@@ -27,10 +29,15 @@ namespace Esuhai.HRM.Application.Mappings
             CreateMap<GetBoxMessageParameter, GetBoxMessageQuery>();
             CreateMap<Box, GetBoxMessageViewModel>();
 
-            CreateMap<GetBoxLatestMessageParameter, GetBoxLatestMessageQuery>();
-            CreateMap<Box, GetBoxLatestMessageViewModel>();
+            CreateMap<GetBoxSelectedParameter, GetBoxSelectedQuery>();
+            CreateMap<Box, GetBoxSelectedViewModel>();
 
             CreateMap<GetByConversationIdParameter, GetByConversationIdQuery>();
+
+            CreateMap<CreateMessageParameter, CreateMessageCommand>();
+            CreateMap<Message, CreateMessageViewModel>();
+
+            CreateMap<UpdateMessageParameter, UpdateMessageCommand>();
         }
     }
 }

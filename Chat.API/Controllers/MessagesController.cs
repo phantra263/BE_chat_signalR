@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chat.Application.Features.Message.Commands.UpdateMessage;
 using Chat.Application.Features.Message.Queries.GetByConversationId;
 using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -20,5 +21,9 @@ namespace Chat.API.Controllers
         [HttpGet("GetByConversation")]
         public async Task<IActionResult> Get([FromQuery] GetByConversationIdParameter parameter)
             => Ok(await Mediator.Send(_mapper.Map<GetByConversationIdQuery>(parameter)));
+
+        [HttpPut("UpdateSeenMessage")]
+        public async Task<IActionResult> Put(UpdateMessageParameter parameter)
+            => Ok(await Mediator.Send(_mapper.Map<UpdateMessageCommand>(parameter)));
     }
 }

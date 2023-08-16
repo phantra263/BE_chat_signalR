@@ -2,9 +2,10 @@
 {
     public class MessageRequest
     {
-        public string conversationId { get; set; }
-        public string senderName { get; set; }
-        public string receiverId { get; set; }
-        public string content { get; set; }
+        public string ConversationId { get; set; }
+        public string SenderName { get; set; }
+        public string ReceiverId { get; set; }
+        public string ReceiverName { get; set; }
+        public string Content { get; set; }
     }
 }
