@@ -1,0 +1,11 @@
+- Account liên kết với tài khoản Google: huynhquangvinh01121999.work@gmail.com
+
+- Thông tin key:value
+vinhhq: vinh@123
+
+- Tên db/password kết nối & connection string trên vs code:
+
+Chat-SignalR-MongoDB
+dev_cloud_db: 6wveXPiBA2WH2G1r
+mongodb+srv://dev_cloud_db:<password>@cluster.zoaigk2.mongodb.net/
+
