@@ -17,29 +17,30 @@ namespace Esuhai.HRM.Application.Mappings
     {
         public GeneralProfile()
         {
+            #region User
             CreateMap<GetByNicknameParameter, GetByNicknameQuery>();
-
             CreateMap<RegisterParameter, RegisterCommand>();
             CreateMap<User, RegisterViewModel>();
-
             CreateMap<AuthenticateParameter, AuthenticateCommand>();
             CreateMap<User, AuthenticateViewModel>();
+            #endregion
 
+            #region Box
             CreateMap<GetBoxChatByUserIdParameter, GetBoxChatByUserIdQuery>();
-
             CreateMap<GetBoxMessageParameter, GetBoxMessageQuery>();
             CreateMap<Box, GetBoxMessageViewModel>();
             CreateMap<Box, CreateBoxLatestMessageViewModel>();
-
             CreateMap<GetBoxSelectedParameter, GetBoxSelectedQuery>();
             CreateMap<Box, GetBoxSelectedViewModel>();
+            #endregion
 
+            #region Message
             CreateMap<GetByConversationIdParameter, GetByConversationIdQuery>();
-
             CreateMap<CreateMessageParameter, CreateMessageCommand>();
             CreateMap<Message, CreateMessageViewModel>();
-
             CreateMap<UpdateMessageParameter, UpdateMessageCommand>();
+            #endregion
+
         }
     }
 }

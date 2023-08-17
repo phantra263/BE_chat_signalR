@@ -14,9 +14,5 @@
     <ProjectReference Include="..\Chat.Infrastructure.Persistence\Chat.Infrastructure.Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 
 </Project>

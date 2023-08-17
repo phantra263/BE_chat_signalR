@@ -1,4 +1,4 @@
-using Chat.API.SignalR;
+using Chat.API.SignalR.Hubs;
 using Chat.Application;
 using Chat.Infrastructure.Persistence;
 using Lab.SignalR_Chat.BE.Extensions;

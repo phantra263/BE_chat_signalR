@@ -11,21 +11,19 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
 
-namespace Chat.API.SignalR
+namespace Chat.API.SignalR.Hubs
 {
     public class MessageHub : Hub
     {
         private readonly IPresenceTracker _presenceTracker;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        //private readonly IHostedService _backgroundService;
 
         public MessageHub(IPresenceTracker presenceTracker, IMediator mediator, IMapper mapper)
         {
             _presenceTracker = presenceTracker;
             _mediator = mediator;
             _mapper = mapper;
-            //_backgroundService = backgroundService;
         }
 
         public override async Task OnConnectedAsync()
@@ -50,9 +48,6 @@ namespace Chat.API.SignalR
                     await Clients.Client(connectionId).SendAsync("OnConnected", new Response<object>(new { UserId = userId, IsOnline = isUserOnline }));
                 }
             }
-
-            //if (_backgroundService is Worker worker)
-            //    worker.CancelTask(userId);
 
             await base.OnConnectedAsync();
         }
@@ -82,9 +77,6 @@ namespace Chat.API.SignalR
                     await Clients.Client(connectionId).SendAsync("OnDisconnected", new Response<object>(new { UserId = userId, IsOnline = false }));
                 }
             }
-
-            //if (_backgroundService is Worker worker)
-            //    worker.TriggerTask(userId);
 
             await base.OnDisconnectedAsync(exception);
         }
@@ -131,7 +123,7 @@ namespace Chat.API.SignalR
                     ++cnt;
                     await Clients.Client(connectionId).SendAsync("OnReceiveMessage", viewModel);
 
-                    if(queryResult.Succeeded)
+                    if (queryResult.Succeeded)
                         await Clients.Client(connectionId).SendAsync("OnReceiveNewMessageBox", queryResult.Data);
 
                     // gửi thông báo cho user khi có tin nhắn mới

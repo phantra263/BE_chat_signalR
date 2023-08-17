@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Chat.API.SignalR
+namespace Chat.API.SignalR.Old_Hubs
 {
     public class ChatHubRefactor : Hub
     {
