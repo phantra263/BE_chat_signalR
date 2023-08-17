@@ -1,22 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
-using System;
 
 namespace Chat.Domain.Entities
 {
-    public class Message
+    public class Message : BaseEntity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [JsonProperty("Id")]
-        public string Id { get; set; }
-
-        [JsonProperty("Created")]
-        public DateTime Created { get; set; } = DateTime.Now;
-
-        [JsonProperty("Deleted")]
-        public bool Deleted { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         [JsonProperty("ConversationId")]
