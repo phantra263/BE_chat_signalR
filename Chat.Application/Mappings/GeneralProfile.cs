@@ -6,6 +6,7 @@ using Chat.Application.Features.Box.Queries.GetBoxSelected;
 using Chat.Application.Features.Message.Commands.CreateMessage;
 using Chat.Application.Features.Message.Commands.UpdateMessage;
 using Chat.Application.Features.Message.Queries.GetByConversationId;
+using Chat.Application.Features.Room.Commands.CreateRoom;
 using Chat.Application.Features.User.Commands.Authenticate;
 using Chat.Application.Features.User.Commands.Register;
 using Chat.Application.Features.User.Queries.GetByNickname;
@@ -41,6 +42,11 @@ namespace Esuhai.HRM.Application.Mappings
             CreateMap<UpdateMessageParameter, UpdateMessageCommand>();
             #endregion
 
+            #region Room
+            CreateMap<CreateRoomParameter, CreateRoomCommand>();
+            CreateMap<CreateRoomCommand, Room>();
+            CreateMap<Room, CreateRoomViewModel>();
+            #endregion
         }
     }
 }

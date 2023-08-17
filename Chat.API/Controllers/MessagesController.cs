@@ -4,7 +4,6 @@ using Chat.Application.Features.Message.Queries.GetByConversationId;
 using Chat.Domain.Constants;
 using Chat.Domain.Entities;
 using Chat.Infrastructure.Persistence.MongoDBSetting;
-using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System.Threading.Tasks;

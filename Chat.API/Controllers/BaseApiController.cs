@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lab.SignalR_Chat.BE.Controllers
+namespace Chat.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

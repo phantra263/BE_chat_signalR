@@ -49,7 +49,7 @@ namespace Lab.SignalR_Chat.BE
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MessageHub>("/hub/chat");
+                endpoints.MapHub<RoomHub>("/hub/chat");
             });
         }
     }

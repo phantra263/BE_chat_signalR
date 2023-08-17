@@ -2,7 +2,6 @@
 using Chat.Application.Features.User.Commands.Authenticate;
 using Chat.Application.Features.User.Commands.Register;
 using Chat.Application.Features.User.Queries.GetByNickname;
-using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
