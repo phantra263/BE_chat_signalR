@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
 using Chat.Application.Features.Box.Queries.GetBoxSelected;
+using Chat.Domain.Constants;
+using Chat.Domain.Entities;
+using Chat.Infrastructure.Persistence.MongoDBSetting;
 using Lab.SignalR_Chat.BE.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System.Threading.Tasks;
 
 namespace Chat.API.Controllers
@@ -12,10 +16,15 @@ namespace Chat.API.Controllers
     public class BoxsController : BaseApiController
     {
         private readonly IMapper _mapper;
+        private readonly IMongoCollection<Box> _box;
 
-        public BoxsController(IMapper mapper)
+        public BoxsController(IMongoDBSettings settings, IMapper mapper)
         {
             _mapper = mapper;
+
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _box = database.GetCollection<Box>(Collections.BoxCollection);
         }
 
         //[HttpPost]
@@ -33,5 +42,12 @@ namespace Chat.API.Controllers
         [HttpGet("GetByUserId")]
         public async Task<IActionResult> Get([FromQuery] GetBoxChatByUserIdParameter parameter)
             => Ok(await Mediator.Send(_mapper.Map<GetBoxChatByUserIdQuery>(parameter)));
+
+        [HttpDelete("RemoveAll")]
+        public async Task<IActionResult> Delete()
+        {
+            _box.DeleteMany(x => x.Deleted != true);
+            return Ok();
+        }
     }
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Chat.Application.Features.Box.Queries.GetBoxChatByUserId
+namespace Chat.Application.Features.Box.Commands.CreateBoxLatestMessage
 {
-    public class GetBoxChatByUserIdViewModel
+    public class CreateBoxLatestMessageViewModel
     {
         public string Id { get; set; }
         public string ConversationId { get; set; }
         public bool? IsLock { get; set; }
         public bool? IsMute { get; set; }
-
         public string UserId { get; set; }
         public string Nickname { get; set; }
         public string AvatarBgColor { get; set; }

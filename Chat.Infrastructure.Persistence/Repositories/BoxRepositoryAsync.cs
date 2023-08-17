@@ -140,6 +140,7 @@ namespace Chat.Infrastructure.Persistence.Repositories
                     AvatarBgColor = user?.AvatarBgColor,
                     Status = user?.Status,
                     IsOnline = user?.IsOnline,
+                    SenderId = latestMessage?.SenderId,
                     Content = latestMessage?.Content,
                     IsSeen = latestMessage?.IsSeen,
                     Created = latestMessage?.Created

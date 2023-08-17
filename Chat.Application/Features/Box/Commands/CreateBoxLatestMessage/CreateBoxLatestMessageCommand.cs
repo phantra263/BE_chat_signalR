@@ -6,22 +6,22 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chat.Application.Features.Box.Queries.GetBoxSelected
+namespace Chat.Application.Features.Box.Commands.CreateBoxLatestMessage
 {
-    public class GetBoxSelectedQuery : IRequest<Response<GetBoxSelectedViewModel>>
+    public class CreateBoxLatestMessageCommand : IRequest<Response<CreateBoxLatestMessageViewModel>>
     {
         public string SenderId { get; set; }
         public string ReceiverId { get; set; }
     }
 
-    public class GetLatestMessageBoxQueryHandler : IRequestHandler<GetBoxSelectedQuery, Response<GetBoxSelectedViewModel>>
+    public class CreateBoxLatestMessageCommandHandler : IRequestHandler<CreateBoxLatestMessageCommand, Response<CreateBoxLatestMessageViewModel>>
     {
         private readonly IMapper _mapper;
         private readonly IMessageRepositoryAsync _messageRepositoryAsync;
         private readonly IBoxRepositoryAsync _boxRepositoryAsync;
         private readonly IUserRepositoryAsync _userRepositoryAsync;
 
-        public GetLatestMessageBoxQueryHandler(IMapper mapper, IMessageRepositoryAsync messageRepositoryAsync, IBoxRepositoryAsync boxRepositoryAsync, IUserRepositoryAsync userRepositoryAsync)
+        public CreateBoxLatestMessageCommandHandler(IMapper mapper, IMessageRepositoryAsync messageRepositoryAsync, IBoxRepositoryAsync boxRepositoryAsync, IUserRepositoryAsync userRepositoryAsync)
         {
             _mapper = mapper;
             _messageRepositoryAsync = messageRepositoryAsync;
@@ -29,7 +29,7 @@ namespace Chat.Application.Features.Box.Queries.GetBoxSelected
             _userRepositoryAsync = userRepositoryAsync;
         }
 
-        public async Task<Response<GetBoxSelectedViewModel>> Handle(GetBoxSelectedQuery request, CancellationToken cancellationToken)
+        public async Task<Response<CreateBoxLatestMessageViewModel>> Handle(CreateBoxLatestMessageCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -37,32 +37,30 @@ namespace Chat.Application.Features.Box.Queries.GetBoxSelected
                 var receiver = await _userRepositoryAsync.GetByIdAsync(request.ReceiverId);
 
                 if (receiver == null || sender == null)
-                    return new Response<GetBoxSelectedViewModel>("Người dùng không tồn tại");
+                    return new Response<CreateBoxLatestMessageViewModel>("Người dùng không tồn tại");
 
-                var viewModel = new GetBoxSelectedViewModel();
+                var viewModel = new CreateBoxLatestMessageViewModel();
 
                 // get thông tin box chat, nếu chưa có thì tạo mới
                 var boxChat = await _boxRepositoryAsync.GetCheckExist(request.SenderId, request.ReceiverId);
 
+                if (boxChat != null)
+                    return new Response<CreateBoxLatestMessageViewModel>("Đã tạo hộp thoại trước đó");
+
                 // check user 2 đã tạo hội thoại trước đó chưa
+                // nếu chưa thì tạo mới và lấy ra tin nhắn cuối cùng của 2 user
                 var boxAccessBefore = await _boxRepositoryAsync.GetCheckUsr2AccessUsr1(request.SenderId, request.ReceiverId);
 
-                if (boxChat == null)
+                var newBoxChat = await _boxRepositoryAsync.CreateAsync(new Domain.Entities.Box
                 {
-                    var newBoxChat = await _boxRepositoryAsync.CreateAsync(new Domain.Entities.Box
-                    {
-                        User1Id = request.SenderId,
-                        User2Id = request.ReceiverId,
-                        ConversationId = boxAccessBefore != null ? boxAccessBefore.ConversationId : $"{request.SenderId}{request.ReceiverId}"
-                    });
+                    User1Id = request.SenderId,
+                    User2Id = request.ReceiverId,
+                    ConversationId = boxAccessBefore != null ? boxAccessBefore.ConversationId : $"{request.SenderId}{request.ReceiverId}"
+                });
 
-                    viewModel = _mapper.Map<GetBoxSelectedViewModel>(newBoxChat);
-                }
-                else
-                {
-                    viewModel = _mapper.Map<GetBoxSelectedViewModel>(boxChat);
-                }
+                viewModel = _mapper.Map<CreateBoxLatestMessageViewModel>(newBoxChat);
 
+                // lấy ra tin nhắn cuối cùng của 2 user
                 var message = await _messageRepositoryAsync.GetLatestMessageChatAsync(request.SenderId, request.ReceiverId);
 
                 viewModel.UserId = receiver.Id;
@@ -76,9 +74,9 @@ namespace Chat.Application.Features.Box.Queries.GetBoxSelected
                 viewModel.IsSeen = message?.IsSeen;
                 viewModel.Created = message?.Created;
 
-                return new Response<GetBoxSelectedViewModel>(viewModel);
+                return new Response<CreateBoxLatestMessageViewModel>(viewModel);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }

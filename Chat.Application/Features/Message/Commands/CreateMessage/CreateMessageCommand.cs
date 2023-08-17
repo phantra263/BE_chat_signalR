@@ -30,6 +30,7 @@ namespace Chat.Application.Features.Message.Commands.CreateMessage
         {
             try
             {
+                /*
                 // get thông tin box chat, nếu chưa có thì tạo mới
                 var boxChat = await _boxRepositoryAsync.GetCheckExist(request.SenderId, request.ReceiverId);
 
@@ -46,6 +47,7 @@ namespace Chat.Application.Features.Message.Commands.CreateMessage
                         ConversationId = request.ConversationId
                     });
                 }
+                */
 
                 // add message vào db
                 var message = await _messageRepositoryAsync.CreateAsync(new Domain.Entities.Message

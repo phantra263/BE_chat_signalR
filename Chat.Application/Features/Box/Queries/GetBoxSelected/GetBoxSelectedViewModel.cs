@@ -13,6 +13,8 @@ namespace Chat.Application.Features.Box.Queries.GetBoxSelected
         public string AvatarBgColor { get; set; }
         public bool? Status { get; set; }
         public bool? IsOnline { get; set; }
+
+        public string SenderId { get; set; }
         public string Content { get; set; }
         public bool? IsSeen { get; set; }
         public DateTime? Created { get; set; }

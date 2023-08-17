@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chat.Application.Features.Box.Commands.CreateBoxLatestMessage;
 using Chat.Application.Features.Box.Queries.GetBoxChatByUserId;
 using Chat.Application.Features.Box.Queries.GetBoxMessage;
 using Chat.Application.Features.Box.Queries.GetBoxSelected;
@@ -28,6 +29,7 @@ namespace Esuhai.HRM.Application.Mappings
 
             CreateMap<GetBoxMessageParameter, GetBoxMessageQuery>();
             CreateMap<Box, GetBoxMessageViewModel>();
+            CreateMap<Box, CreateBoxLatestMessageViewModel>();
 
             CreateMap<GetBoxSelectedParameter, GetBoxSelectedQuery>();
             CreateMap<Box, GetBoxSelectedViewModel>();

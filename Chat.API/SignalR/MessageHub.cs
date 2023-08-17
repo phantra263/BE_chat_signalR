@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Chat.API.Models.Requests;
 using Chat.API.SignalR.PresenceTracker;
+using Chat.Application.Features.Box.Commands.CreateBoxLatestMessage;
 using Chat.Application.Features.Box.Queries.GetBoxChatWith;
 using Chat.Application.Features.Message.Commands.CreateMessage;
 using Chat.Application.Features.Message.Commands.UpdateMessage;
@@ -111,13 +111,17 @@ namespace Chat.API.SignalR
             viewModel.SenderName = parameter.SenderName;
             viewModel.ReceiverName = parameter.ReceiverName;
 
-            // send signal den cac client
+            // tao hop thoai chat neu chua ton tai
+            var queryResult = await _mediator.Send(new CreateBoxLatestMessageCommand { SenderId = parameter.ReceiverId, ReceiverId = userId });
+
+            // send signal den cac connection cua chinh sender
             var senderConnectionIds = _presenceTracker.GetConnectionIds(userId);
             foreach (var connectionId in senderConnectionIds)
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", viewModel);
+                await Clients.Client(connectionId).SendAsync("OnReceiveMessage", viewModel);
             }
 
+            // send signal den cac connection cua receiver
             var receiverConnectionIds = _presenceTracker.GetConnectionIds(parameter.ReceiverId);
             if (!userId.Equals(parameter.ReceiverId))   // nếu nó ko tự gửi cho chính nó
             {
@@ -125,11 +129,14 @@ namespace Chat.API.SignalR
                 foreach (var connectionId in receiverConnectionIds)
                 {
                     ++cnt;
-                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", viewModel);
+                    await Clients.Client(connectionId).SendAsync("OnReceiveMessage", viewModel);
+
+                    if(queryResult.Succeeded)
+                        await Clients.Client(connectionId).SendAsync("OnReceiveNewMessageBox", queryResult.Data);
 
                     // gửi thông báo cho user khi có tin nhắn mới
                     if (cnt == 1)
-                        await Clients.Client(connectionId).SendAsync("ReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {parameter.SenderName}: \n{parameter.Content}" }));
+                        await Clients.Client(connectionId).SendAsync("OnReceiveNotificationMessage", new Response<object>(new { Content = $"Bạn có 1 tin nhắn mới từ {parameter.SenderName}: \n{parameter.Content}" }));
                 }
             }
         }
