@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Features.Room.Commands.CreateRoom
 {
-    public class CreateRoomCommand : IRequest<Response<CreateRoomViewModel>>
+    public class CreateRoomCommand : IRequest<Response<string>>
     {
         public string Name { get; set; }
         public string UserId { get; set; }
     }
 
-    public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Response<CreateRoomViewModel>>
+    public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Response<string>>
     {
         private readonly IRoomRepositoryAsync _roomRepositoryAsync;
         private readonly IMapper _mapper;
@@ -25,19 +25,19 @@ namespace Chat.Application.Features.Room.Commands.CreateRoom
             _mapper = mapper;
         }
 
-        public async Task<Response<CreateRoomViewModel>> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
+        public async Task<Response<string>> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var roomExist = await _roomRepositoryAsync.FindOneByNameAsync(request.Name);
                 if (roomExist != null)
-                    return new Response<CreateRoomViewModel>($"Tên phòng {request.Name} đã tồn tại");
+                    return new Response<string>($"Tên phòng {request.Name} đã tồn tại");
 
                 var result = await _roomRepositoryAsync.InsertOneAsync(_mapper.Map<Domain.Entities.Room>(request));
 
-                return new Response<CreateRoomViewModel>(_mapper.Map<CreateRoomViewModel>(result));
+                return new Response<string>(result.Id, "");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

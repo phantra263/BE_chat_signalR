@@ -18,6 +18,14 @@ namespace Chat.Domain.Entities
         [JsonProperty("AvatarBgColor")]
         public string AvatarBgColor { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
+        [JsonProperty("AvatarId")]
+        public string AvatarId { get; set; }
+
+        [BsonRepresentation(BsonType.String)]
+        [JsonProperty("AnonymousName")]
+        public string AnonymousName { get; set; }
+
         [BsonRepresentation(BsonType.Boolean)]
         [JsonProperty("Status")]
         public bool Status { get; set; }
