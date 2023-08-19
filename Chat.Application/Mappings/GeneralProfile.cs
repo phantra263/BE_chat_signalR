@@ -57,7 +57,7 @@ namespace Esuhai.HRM.Application.Mappings
             CreateMap<GetLatestMessageInRoomParameter, GetLatestMessageInRoomQuery>();
             CreateMap<Room, GetLatestMessageInRoomViewModel>();
 
-            CreateMap<CreateMessageCommand, MessageRoom>();
+            CreateMap<CreateMessageRoomCommand, MessageRoom>();
             CreateMap<CreateMessageRoomParameter, CreateMessageRoomCommand>();
             #endregion
         }

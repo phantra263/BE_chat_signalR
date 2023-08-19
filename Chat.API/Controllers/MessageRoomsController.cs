@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chat.Application.Features.MessageRoom.Commands.CreateMessageRoom;
 using Chat.Application.Features.MessageRoom.Queries.GetLatestMessageInRoom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

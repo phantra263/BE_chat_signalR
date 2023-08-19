@@ -71,8 +71,9 @@ namespace Chat.API.SignalR.Hubs
             var commandResult = await _mediator.Send(command);
             if (!commandResult.Succeeded) return;
 
-            await Clients.All.SendAsync("OnReceiveMessageRoom", new HistoryMessageRoomViewModel
+            await Clients.All.SendAsync("OnReceiveMessageRoom", new ReceiveMessageRoomResponse
             {
+                RoomId = parameter.RoomId,
                 Content = commandResult.Data.Content,
                 Created = commandResult.Data.Created,
                 SenderId = userInfo.Data.Id,
